@@ -7,7 +7,8 @@ mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY
 
 class PTmp(pyinotify.ProcessEvent):
     def process(self,action,event):
-        print(action + ": %s" % os.path.join(event.path,event.name))
+        if(event.path.find('.') == -1 and not event.name.startswith('.')):
+            print(action + ": %s" % os.path.join(event.path,event.name))
     
     def process_IN_CREATE(self,event):
         self.process("Create",event)
