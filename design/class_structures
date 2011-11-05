@@ -1,0 +1,31 @@
+iNotify Interface
+	init()
+	deinit()
+	startWatch(Dir)
+	removeWatch(Dir)
+	registerHandler(evType, fn)
+	removeHandler(evType)
+	setMask(mask)
+
+Event Format
+      -type
+      -path
+      -name
+
+Event Sanitiser
+      init()
+      deinit()
+      addBlockedPath(Path)
+      rmBlockedPath(Path)
+      registerCallback(fn)
+      sanitise(ev)
+
+File Scan Queue
+     init()
+     deinit()
+     add(path)
+     //jazz for incrementor
+     //Should deal with flagging/unflagging
+
+
+     
