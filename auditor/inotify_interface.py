@@ -3,19 +3,13 @@ import os,pyinotify
 
 class INotifyInterface():
     '''FIXME:DOC'''
-    wm = None 
-    notifier = None
-    wmm = None
-    mask = None
-    handler_list = {}
-    
+        
     class EventProcessor(pyinotify.ProcessEvent):
         '''FIXME:DOC'''
-        owner =  None
         def __init__(self,newOwner):
             '''FIXME:DOC'''
             super().__init__(self)
-            owner = newOwner
+            self.owner = newOwner
         
         def process_default(self,event):
             '''FIXME:DOC'''
@@ -28,7 +22,9 @@ class INotifyInterface():
         self.wm = pyinotify.WatchManager()
         self.mask = pyinotify.IN_CREATE | pyinotify.INDELETE | pyinotify.IN_MODIFY
         self.notifier = pyinotify.Notifier(wm,self.EventProcessor(self),timeout=tOut)
-    
+        self.wmm = None
+        self.handler_list = {}
+
     def deinit(self):
         '''FIXME:DOC'''
         if(wdd != None and len(wdd)>0):

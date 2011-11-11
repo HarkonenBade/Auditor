@@ -4,12 +4,11 @@ import os
 
 class EventSanitiser():
     '''FIXME:DOC'''
-    callback = None
-    blocked_paths = []
     
-    def init(self):
+    def __init__(self):
         '''FIXME:DOC'''
-        pass
+        self.callback = None
+        self.blocked_paths = []
     
     def deinit(self):
         '''FIXMEDOC'''
@@ -21,7 +20,7 @@ class EventSanitiser():
     
     def rmBlockedPath(self,path):
         '''FIXME:DOC'''
-        self.blocked_path.remove(path)
+        self.blocked_paths.remove(path)
     
     def registerCallback(self,fn):
         '''FIXME:DOC'''
