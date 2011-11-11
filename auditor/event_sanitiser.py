@@ -17,29 +17,32 @@ class EventSanitiser():
     
     def addBlockedPath(self,path):
         '''FIXME:DOC'''
-        pass
+        self.blocked_paths.append(path)
     
     def rmBlockedPath(self,path):
         '''FIXME:DOC'''
-        pass
+        self.blocked_path.remove(path)
     
     def registerCallback(self,fn):
         '''FIXME:DOC'''
-        pass
+        self.callback = fn
     
     def sanitise(self,ev):
         '''Sanitises events passed to it. Removes events in blocked paths and on paths containing a . or for files beginning with .'''
         (evType,evPath,evName) = ev
         
         for p in self.blocked_paths:
-            if(evPath.startsWith(p)):
+            if(evPath.startswith(p)):
+                print("Stripped due to blocked path")
                 return
         
-        if(evPath.contains('.')):
+        if(evPath.find('.') >= 0):
+            print("Stripped due to . in path")
             return
         
-        if(evName.startsWith('.')):
+        if(evName.startswith('.')):
+            print("Stripped due to start .")
             return
         
-        callback(ev)
+        self.callback(ev)
 
