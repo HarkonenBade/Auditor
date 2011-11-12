@@ -20,34 +20,34 @@ class INotifyInterface():
     def __init__(self,tOut):
         '''Initialises the watch manager and notifier. tOut is the largest time that the notifier can hold control for.'''
         self.wm = pyinotify.WatchManager()
-        self.mask = pyinotify.IN_CREATE | pyinotify.INDELETE | pyinotify.IN_MODIFY
-        self.notifier = pyinotify.Notifier(wm,self.EventProcessor(self),timeout=tOut)
-        self.wmm = None
+        self.mask = pyinotify.IN_CREATE | pyinotify.IN_DELETE | pyinotify.IN_MODIFY
+        self.notifier = pyinotify.Notifier(self.wm,self.EventProcessor(self),timeout=tOut)
+        self.wdd = {}
         self.handler_list = {}
 
     def deinit(self):
         '''FIXME:DOC'''
-        if(wdd != None and len(wdd)>0):
-            wm.rm_watch(wdd.values())
+        if(self.wdd != None and len(self.wdd)>0):
+            self.wm.rm_watch(self.wdd.values())
     
     def startWatch(self,watchDir,recDir=True):
         '''Adds a watch on dir watchDir. If recDir is true then it will recursivly add watches.'''
-        wdd.update(wm.add_watch(watchDir, mask, rec=recDir))
+        self.wdd.update(self.wm.add_watch(watchDir, self.mask, rec=recDir))
     
     def removeWatch(self,watchDir,recDir=True):
         '''Removes the watch on a dir watchDir. If recDir is true it will recursivly remove watches.'''
-        removed = wm.rm_watch(watchDir,rec=recDir)
+        removed = self.wm.rm_watch(watchDir,rec=recDir)
         for k,v in removed:
             if(v):#Removed value is set to true if the dir has been removed.
-                wdd.pop(k)
+                self.wdd.pop(k)
     
     def registerHandler(self,evType, fn):
         '''Registers a handler fn to handle events of type evType.'''
-        self.handlers[evType] = fn
+        self.handler_list[evType] = fn
     
     def removeHandler(self,evType):
         '''Removes the handler for events of evType.'''
-        self.handlers[evType] = None
+        self.handler_list[evType] = None
     
     def setMask(self,mask):
         '''Sets the mask for events received. Should not need to be modified.'''
