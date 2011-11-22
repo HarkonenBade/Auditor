@@ -12,6 +12,10 @@ class FileScanQueue():
                 return
         self.queue.append((path,False))
     
+    def remove(self,path):
+        self.queue.remove((path,True))
+        self.queue.remove((path,False))
+    
     def __next__(self):
         if(len(self.queue)==0):
             raise StopIteration
