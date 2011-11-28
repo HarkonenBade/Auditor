@@ -1,22 +1,23 @@
 '''Interface to iNotify system.'''
 import os,pyinotify
 
+
+
 class INotifyInterface():
-    '''FIXME:DOC'''
-        
+    
     class EventProcessor(pyinotify.ProcessEvent):
         '''FIXME:DOC'''
         def __init__(self,newOwner):
             '''FIXME:DOC'''
-            super().__init__(self)
+            super(INotifyInterface.EventProcessor,self).__init__()
             self.owner = newOwner
         
         def process_default(self,event):
             '''FIXME:DOC'''
-            if(self.owner.handler_list.has_key(event.maskname) and self.owner.handler_list[event.maskname] != None):
-                self.owner.handler_list[event.maskname]((event.maskname,event.path,event.name))
+            if(event.maskname in self.owner.handler_list and self.owner.handler_list[event.maskname] != None):
+                self.owner.handler_list[event.maskname]((event.maskname,os.path.abspath(event.path),event.name))
     
-    
+    '''FIXME:DOC'''
     def __init__(self,tOut):
         '''Initialises the watch manager and notifier. tOut is the largest time that the notifier can hold control for.'''
         self.wm = pyinotify.WatchManager()
@@ -24,7 +25,7 @@ class INotifyInterface():
         self.notifier = pyinotify.Notifier(self.wm,self.EventProcessor(self),timeout=tOut)
         self.wdd = {}
         self.handler_list = {}
-
+    
     def deinit(self):
         '''FIXME:DOC'''
         if(self.wdd != None and len(self.wdd)>0):
@@ -59,3 +60,4 @@ class INotifyInterface():
         while self.notifier.check_events():  #loop in case more events appear while we are processing
             self.notifier.read_events()
             self.notifier.process_events()
+
