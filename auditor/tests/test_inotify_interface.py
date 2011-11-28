@@ -13,9 +13,7 @@ class TestINotifyInterface(unittest.TestCase):
 
     def getINotify(self):
         inote = inotify_interface.INotifyInterface(1000)
-        inote.registerHandler("IN_CREATE",self.callback)
-        inote.registerHandler("IN_DELETE",self.callback)
-        inote.registerHandler("IN_MODIFY",self.callback)
+        inote.setHandler(self.callback)
         return inote
         
     def test_basic(self):
@@ -33,5 +31,4 @@ class TestINotifyInterface(unittest.TestCase):
         self.assertEqual(self.recorded,res)
 
 if __name__ == '__main__':
-    print(os.getcwd())
     unittest.main(verbosity=3)

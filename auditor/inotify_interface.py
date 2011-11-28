@@ -14,8 +14,8 @@ class INotifyInterface():
         
         def process_default(self,event):
             '''FIXME:DOC'''
-            if(event.maskname in self.owner.handler_list and self.owner.handler_list[event.maskname] != None):
-                self.owner.handler_list[event.maskname]((event.maskname,os.path.abspath(event.path),event.name))
+            if(self.owner.handler != None):
+                self.owner.handler((event.maskname,os.path.abspath(event.path),event.name))
     
     '''FIXME:DOC'''
     def __init__(self,tOut):
@@ -24,12 +24,12 @@ class INotifyInterface():
         self.mask = pyinotify.IN_CREATE | pyinotify.IN_DELETE | pyinotify.IN_MODIFY
         self.notifier = pyinotify.Notifier(self.wm,self.EventProcessor(self),timeout=tOut)
         self.wdd = {}
-        self.handler_list = {}
+        self.handler = {}
     
     def deinit(self):
         '''FIXME:DOC'''
         if(self.wdd != None and len(self.wdd)>0):
-            self.wm.rm_watch(self.wdd.values())
+            self.wm.rm_watch(list(self.wdd.values()))
     
     def startWatch(self,watchDir,recDir=True):
         '''Adds a watch on dir watchDir. If recDir is true then it will recursivly add watches.'''
@@ -42,13 +42,9 @@ class INotifyInterface():
             if(v):#Removed value is set to true if the dir has been removed.
                 self.wdd.pop(k)
     
-    def registerHandler(self,evType, fn):
-        '''Registers a handler fn to handle events of type evType.'''
-        self.handler_list[evType] = fn
-    
-    def removeHandler(self,evType):
-        '''Removes the handler for events of evType.'''
-        self.handler_list[evType] = None
+    def setHandler(self, fn):
+        '''Sets thefn that handles the produced events.'''
+        self.handler = fn
     
     def setMask(self,mask):
         '''Sets the mask for events received. Should not need to be modified.'''
