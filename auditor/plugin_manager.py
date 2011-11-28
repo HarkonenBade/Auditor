@@ -45,8 +45,11 @@ class PluginManager():
         (m,p) = self.plugins[name]
         attrib_names = p.get_attribute_types().keys
         
-        for a in attrib_names:
+        for a in attrib_names:x
             self.attributes.pop(a)
         
         p.unload(self.cache_dir + '/' + m.__name__)
         self.plugins.pop(m.__name__)
+    
+    def getPluginIter(self):
+        return list(self.plugins.values())
