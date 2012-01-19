@@ -19,7 +19,7 @@ class FileScanQueue():
     def __next__(self):
         if(len(self.queue)==0):
             raise StopIteration
-        (p,f) = self.queue.pop()
+        (p,f) = self.queue.pop(0)
         if(p == self.first_visit):
             self.queue.append((p,f))
             raise StopIteration
