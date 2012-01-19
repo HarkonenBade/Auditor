@@ -77,12 +77,12 @@ class FileDataTree():
     
     def __iter__(self):
         to_process = []
-        for v in self.root.children.items:
-            to_process.append(v)
+        for v in self.root.children.values():
+            to_process.append(('',v))
         
-        for i in to_process:
-            if i.type == 'file':
-                yield i
+        for p,f in to_process:
+            if f.type == 'file':
+                yield (p,f)
             else:
-                for v in i.children.items:
-                    to_process.append(v)
+                for v in f.children.values():
+                    to_process.append((p+'/'+f.name,v))
