@@ -16,33 +16,38 @@ class FileDataTree():
             self.type = "folder"
             self.name = ""
             self.children = {}
-            self.last_updated = None
+            self.last_scanned = None
     
     def __init__(self):
-        self.root = None
+        self.root = self.FolderNode()
+        self.root.last_scanned = time.time()
     
     def add(self,path):
         node = None
         if(os.path.isdir(path)):
-            node = FolderNode()
+            node = self.FolderNode()
         else:
-            node = FileNode()
+            node = self.FileNode()
         node.name = os.path.basename(path)
         node.last_scanned = time.time()
         pardir = os.path.dirname(path)
+        print(node.name+"?"+pardir)
         if(not self.exists(pardir)):
+            print("add")
             self.add(pardir)
         parent = self.get(pardir)
-        parent.children.update({node.name:node})
+        parent.children[node.name] = node
 
     def get(self,path):
         path_elm = self.shatter_path(path)
+        print(path_elm)
         cur = self.root
-        if(cur == None or path_elm[0] != '/'):
+        if(cur == None):
             return None
-        path_elm.pop()
-        for e in path_elm:
-            if(cur != None and cur.type == "folder" and cur.children.haskey(e)):
+        if(path_elm == ['']):
+            return cur
+        for e in path_elm[1:]:
+            if(cur != None and cur.type == "folder" and e in cur.children):
                 cur = cur.children[e]
             else:
                 return None
