@@ -1,3 +1,4 @@
+from auditor.string_dist import levenstienDist
 import stagger
 
 
@@ -9,10 +10,10 @@ class ID3Plugin(BasePlugin):
     
     def get_attribute_types(self):
         n = lambda x,y:0
-        return {'ARTIST':n,
-                'ALBUM' :n,
-                'GENRE' :n,
-                'YEAR'  :(lambda x,y:1 if x<y else -1)}
+        return {'ARTIST':levenstienDist,
+                'ALBUM' :levenstienDist,
+                'GENRE' :levenstienDist,
+                'YEAR'  :lambda x,y:abs(x-y)}
     
     def evaluate_file(self,filename,path):
         tags = stagger.read_tag(filename)

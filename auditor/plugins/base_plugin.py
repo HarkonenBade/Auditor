@@ -16,7 +16,7 @@ class BasePlugin():
         pass
     
     def get_attribute_types(self):
-        '''Retrieves data on all the attributes the plugin supports. Returns a dictionary mapping an attribute type to a function to define an order over that attribute.'''
+        '''Retrieves data on all the attributes the plugin supports. Returns a dictionary mapping an attribute type to a function to define distance over that attribute.'''
         return {}
     
     def evaluate_file(self,filename,path):

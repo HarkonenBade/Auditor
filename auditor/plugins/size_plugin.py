@@ -16,11 +16,8 @@ class SizePlugin(BasePlugin):
         pass
     
     def get_attribute_types(self):
-        return {"Size":self.size_order}
+        return {"Size":lambda x,y:abs(x-y)}
     
     def evaluate_file(self,filename,path):
         size = os.path.getsize(filename)
         return {"Size":size}
-    
-    def size_order(self,f1,f2):
-        return math.floor(min(max(f1-f2,-1),1)) #Returns 1 if f1>f2, 0 if f1=f2 and -1 if f2>f1
