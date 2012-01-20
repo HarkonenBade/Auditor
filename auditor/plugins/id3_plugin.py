@@ -1,4 +1,4 @@
-from auditor.string_dist import levenstienDist
+from auditor.string_dist import levenshtienDist
 import stagger
 
 
@@ -10,9 +10,9 @@ class ID3Plugin(BasePlugin):
     
     def get_attribute_types(self):
         n = lambda x,y:0
-        return {'ARTIST':levenstienDist,
-                'ALBUM' :levenstienDist,
-                'GENRE' :levenstienDist,
+        return {'ARTIST':levenshtienDist,
+                'ALBUM' :levenshtienDist,
+                'GENRE' :levenshtienDist,
                 'YEAR'  :lambda x,y:abs(x-y)}
     
     def evaluate_file(self,filename,path):
