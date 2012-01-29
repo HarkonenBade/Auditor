@@ -25,6 +25,9 @@ class ID3Plugin(base_plugin.BasePlugin):
                     'GENRE':tags.genre,
                     'YEAR':tags.date}
         except stagger.errors.NoTagError as exc:
-            return {}
+            return {'ARTIST':'',
+                    'ALBUM':'',
+                    'GENRE':'',
+                    'YEAR':0}
     
     
