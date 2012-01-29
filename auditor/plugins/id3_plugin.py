@@ -17,11 +17,10 @@ class ID3Plugin(base_plugin.BasePlugin):
                 'YEAR'  :lambda x,y:abs(x-y)}
     
     def evaluate_file(self,filename,path):
-        print("Tag:" + filename)
         tags = stagger.read_tag(path+'/'+filename)
         return {'ARTIST':tags.artist,
                 'ALBUM':tags.album,
                 'GENRE':tags.genre,
-                'YEAR':tags.year}
+                'YEAR':tags.date}
     
     
