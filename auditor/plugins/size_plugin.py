@@ -19,5 +19,5 @@ class SizePlugin(base_plugin.BasePlugin):
         return {"Size":lambda x,y:abs(x-y)}
     
     def evaluate_file(self,filename,path):
-        size = os.path.getsize(filename)
+        size = os.path.getsize(path+'/'+filename)
         return {"Size":size}
