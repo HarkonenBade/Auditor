@@ -57,5 +57,4 @@ class PluginManager():
     def loadAll(self):
         pNames = [x[:-3] for x in os.listdir(self.plugin_dir) if x[-3:] == ".py"]
         for p in pNames:
-            print(p)
             self.load(p)
