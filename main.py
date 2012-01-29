@@ -5,12 +5,14 @@ from os import path
 
 '''Init the config parser. Then load the default and current configs.'''
 config = configparser.SafeConfigParser()
-config.read(['~/.config/auditor/conf','./auditor_conf.cfg'])
+config.read(['~/.config/auditor/conf','./auditor_conf.cfg','./auditor_conf_tmp.cfg'])
 
-print("Enter the plugin directory")
-pDir = input(">")
+#print("Enter the plugin directory")
+#pDir = input(">")
+pDir = config.get("Plugins","plugin_dir")
+pCache = config.get("Plugins","cache_dir")
 
-pm = plugin_manager.PluginManager(pDir,pDir+'/.cache')
+pm = plugin_manager.PluginManager(pDir,pCache)
 ini = inotify_interface.INotifyInterface(100)
 fData = file_data_tree.FileDataTree()
 fScanQ = file_scan_queue.FileScanQueue()
@@ -19,6 +21,10 @@ evHan = event_handler.EventHandler(fScanQ,fData)
 
 ini.setHandler(evHan.process)
 pm.loadAll()
+
+allowed = config.get("Paths","allowed").split(":")
+disallowed = config.get("Paths","disallowed").split(":")
+scan(allowed,disallowed)
 
 def inote_scan():
     global ini
@@ -65,13 +71,14 @@ def print_attr():
     foo = input(">")
     print(fData.get(foo).attributes)
 
-def scan(allowed,disallowed):
+def scan(allowed,disallowed,iNoteAdd = True):
     global fScanQ
     global ini
     for p in allowed:
         p = path.abspath(p)
         if(not p in disallowed and not path.basename(p).startswith('.')):
-            ini.startWatch(p,recDir=False)
+            if(iNoteAdd):
+                ini.startWatch(p,recDir=False)
             cont = os.listdir(p)
             cont = [p+'/'+k for k in cont]
             allowed.extend([k for k in cont if path.isdir(k)])
@@ -86,3 +93,7 @@ cmds = {
 }
 
 cmdproc.cmd_loop(cmds)
+
+f = open('./auditor_conf_tmp.cfg','w')
+config.write(f)
+f.close()
