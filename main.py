@@ -22,10 +22,6 @@ evHan = event_handler.EventHandler(fScanQ,fData)
 ini.setHandler(evHan.process)
 pm.loadAll()
 
-allowed = config.get("Paths","allowed").split(":")
-disallowed = config.get("Paths","disallowed").split(":")
-scan(allowed,disallowed)
-
 def inote_scan():
     global ini
     print("iNotify Scanning...")
@@ -84,6 +80,11 @@ def scan(allowed,disallowed,iNoteAdd = True):
             allowed.extend([k for k in cont if path.isdir(k)])
             [fScanQ.add(k) for k in cont if not path.isdir(k)]            
             
+allowed = config.get("Paths","allowed").split(":")
+disallowed = config.get("Paths","disallowed").split(":")
+scan(allowed,disallowed)
+
+
 cmds = {
     'iscan': inote_scan,
     'fscan': fscan_scan,
