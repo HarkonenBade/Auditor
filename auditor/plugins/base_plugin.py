@@ -21,6 +21,6 @@ class BasePlugin():
     
     def evaluate_file(self,filename,path):
         '''Evaluates a file returning a dictionary mapping attribute types to values for thouse attributes.'''
-        pass
+        return {}
     
     

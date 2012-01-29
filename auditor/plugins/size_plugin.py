@@ -1,4 +1,4 @@
-from .base_plugin import BasePlugin
+from auditor.plugins.base_plugin import BasePlugin
 import os,math
 
 
