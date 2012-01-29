@@ -12,4 +12,5 @@ def cmd_loop(cmds,prompt=">",quitstr="q"):
             print("That is not a valid command")
         inp = input(prompt)
 
-cmd_loop(cmds)
+if __name__=="__main__":
+	cmd_loop(cmds)
