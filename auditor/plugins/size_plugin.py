@@ -1,8 +1,8 @@
-from auditor.plugins.base_plugin import BasePlugin
+from auditor.plugins import base_plugin
 import os,math
 
 
-class SizePlugin(BasePlugin):
+class SizePlugin(base_plugin.BasePlugin):
     '''Plugin to classify files based on size.'''
     
     name = "Size Classifier."

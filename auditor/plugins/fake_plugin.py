@@ -1,8 +1,8 @@
-from auditor.plugins.base_plugin import BasePlugin
+from auditor.plugins import base_plugin
 import os,math
 
 
-class FakePlugin(BasePlugin):
+class FakePlugin(base_plugin.BasePlugin):
     '''Fake plugin, classifies all files with the same attribute.'''
     
     name = "Fake Classifier."
