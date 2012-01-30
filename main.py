@@ -83,7 +83,7 @@ def scan(allowed,disallowed,iNoteAdd = True):
 allowed = config.get("Paths","allowed").split(":")
 disallowed = config.get("Paths","disallowed").split(":")
 scan(allowed,disallowed)
-
+fScan.scan()
 
 cmds = {
     'iscan': inote_scan,
@@ -94,6 +94,9 @@ cmds = {
 }
 
 cmdproc.cmd_loop(cmds)
+
+config.set("Paths","allowed",':'.join(allowed))
+config.set("Paths","disallowed",':'.join(disallowed))
 
 f = open('./auditor_conf_tmp.cfg','w')
 config.write(f)
