@@ -23,7 +23,7 @@ class ID3Plugin(base_plugin.BasePlugin):
             return {'ARTIST':tags.artist,
                     'ALBUM':tags.album,
                     'GENRE':tags.genre,
-                    'YEAR':tags.date}
+                    'YEAR':int(tags.date)}
         except stagger.errors.NoTagError as exc:
             return {'ARTIST':'',
                     'ALBUM':'',
