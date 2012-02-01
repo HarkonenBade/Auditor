@@ -10,7 +10,6 @@ class ID3Plugin(base_plugin.BasePlugin):
     version = "0.0.0" 
     
     def get_attribute_types(self):
-        n = lambda x,y:0
         return {'ARTIST':levenshtienDist,
                 'ALBUM' :levenshtienDist,
                 'GENRE' :levenshtienDist,
@@ -24,7 +23,12 @@ class ID3Plugin(base_plugin.BasePlugin):
                     'ALBUM':tags.album,
                     'GENRE':tags.genre,
                     'YEAR':int(tags.date)}
-        except stagger.errors.NoTagError as exc:
+        except ValueError as exc:
+            return {'ARTIST':tags.artist,
+                    'ALBUM':tags.album,
+                    'GENRE':tags.genre,
+                    'YEAR':0}
+        except Exception as exc:
             return {'ARTIST':'',
                     'ALBUM':'',
                     'GENRE':'',
