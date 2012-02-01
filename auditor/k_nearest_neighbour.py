@@ -7,13 +7,13 @@ def attrib_dist(f1,f2,pMan):
         dists += dist**2
     return math.sqrt(dists)
 
-def k_nearest_neighbour(fName,fDataT,pMan,k):
-    nearest_arr = [(sys.maxsize,'')]*k
+def k_nearest_neighbour(fName,fDataT,pMan,kVal):
+    nearest_arr = [(sys.maxsize,'')]*kVal
     curFile = fDataT.get(fName)
     for v,f in fDataT:
         if(f!=curFile):
             dist = attrib_dist(curFile,f,pMan)
-            for i in range(k):
+            for i in range(kVal):
                 if(nearest_arr[i][0] > dist):
                     nearest_arr.insert(i,(dist,v))
                     nearest_arr.pop()
@@ -34,4 +34,7 @@ def k_nearest_neighbour(fName,fDataT,pMan,k):
             max_votes = v
             max_key = k
     
-    return max_key
+    if(max_votes > (kVal/2)):
+        return max_key
+    else:
+        return ''
