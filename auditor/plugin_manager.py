@@ -31,6 +31,7 @@ class PluginManager():
                         return False
                     else:
                         self.attributes[k]=attribs[k]
+                plugin.load(self.cache_dir + '/' + m.__name__)
                 return True
     
     
