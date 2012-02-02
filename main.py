@@ -67,19 +67,44 @@ def print_attr():
     foo = input(">")
     print(fData.get(foo).attributes)
 
+def save_tree():
+    global fData
+    print("Enter a file to save to.")
+    foo = input(">")
+    fData.save(foo)
+
+def load_tree():
+    global fData
+    print("Enter a file to load from.")
+    foo = input(">")
+    fData.load(foo)
+
 def scan(allowed,disallowed,iNoteAdd = True):
     global fScanQ
     global ini
-    for p in allowed:
+    pathlist = []
+    pathlist.extend(allowed)
+    for p in pathlist:
         p = path.abspath(p)
         if(not p in disallowed and not path.basename(p).startswith('.')):
             if(iNoteAdd):
                 ini.startWatch(p,recDir=False)
             cont = os.listdir(p)
+            print(cont)
             cont = [p+'/'+k for k in cont]
-            allowed.extend([k for k in cont if path.isdir(k)])
-            [fScanQ.add(k) for k in cont if not path.isdir(k)]            
-            
+            for k in cont:
+                if path.isdir(k):
+                    print(k)
+                    pathlist.extend([k])
+                else:
+                    print(k)
+                    f = fData.get(k)
+                    if(f==None or f.last_scanned < os.stat(k).st_ctime):
+                        fScanQ.add(k) 
+
+tree_loc = config.get("Paths","db_loc")
+fData.load(tree_loc)
+
 allowed = config.get("Paths","allowed").split(":")
 disallowed = config.get("Paths","disallowed").split(":")
 scan(allowed,disallowed)
@@ -90,10 +115,14 @@ cmds = {
     'fscan': fscan_scan,
     'addpath': path_add,
     'knear' : k_near,
-    'pattr' : print_attr
+    'pattr' : print_attr,
+    'savetree': save_tree,
+    'loadtree': load_tree
 }
 
 cmdproc.cmd_loop(cmds)
+
+fData.save(tree_loc)
 
 config.set("Paths","allowed",':'.join(allowed))
 config.set("Paths","disallowed",':'.join(disallowed))
