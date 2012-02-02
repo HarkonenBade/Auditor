@@ -1,33 +1,32 @@
-import os,time
+import os,time,pickle
 
-
+class FileNode():
+    def __init__(self):
+        self.type = "file"
+        self.name = ""
+        self.attributes = {}
+        self.last_scanned = None
+    
+class FolderNode():
+    def __init__(self):
+        self.type = "folder"
+        self.name = ""
+        self.children = {}
+        self.last_scanned = None
+   
 
 class FileDataTree():
     
-    class FileNode():
-        def __init__(self):
-            self.type = "file"
-            self.name = ""
-            self.attributes = {}
-            self.last_scanned = None
-    
-    class FolderNode():
-        def __init__(self):
-            self.type = "folder"
-            self.name = ""
-            self.children = {}
-            self.last_scanned = None
-    
     def __init__(self):
-        self.root = self.FolderNode()
+        self.root = FolderNode()
         self.root.last_scanned = time.time()
     
     def add(self,path):
         node = None
         if(os.path.isdir(path)):
-            node = self.FolderNode()
+            node = FolderNode()
         else:
-            node = self.FileNode()
+            node = FileNode()
         node.name = os.path.basename(path)
         node.last_scanned = time.time()
         pardir = os.path.dirname(path)
@@ -72,9 +71,18 @@ class FileDataTree():
             node = self.get(path)
             if(node.type == 'file'):
                 node.attributes.update(data)
+                node.last_scanned = time.time()
             else:
                 pass
+
+    def save(self,filepath):
+        with open(filepath,"wb") as f:
+            pickle.dump(self.root,f)
     
+    def load(self,filepath):
+        with open(filepath,"rb") as f:
+            self.root = pickle.load(f)
+            
     def __iter__(self):
         to_process = []
         for v in self.root.children.values():
