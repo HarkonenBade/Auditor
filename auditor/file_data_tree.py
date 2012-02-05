@@ -30,16 +30,16 @@ class FileDataTree():
         node.name = os.path.basename(path)
         node.last_scanned = time.time()
         pardir = os.path.dirname(path)
-        print(node.name+"?"+pardir)
+        #print(node.name+"?"+pardir)
         if(not self.exists(pardir)):
-            print("add")
+            #print("add")
             self.add(pardir)
         parent = self.get(pardir)
         parent.children[node.name] = node
 
     def get(self,path):
         path_elm = self.shatter_path(path)
-        print(path_elm)
+        #print(path_elm)
         cur = self.root
         if(cur == None):
             return None
