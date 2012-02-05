@@ -17,9 +17,11 @@ def k_nearest_neighbour(fName,fDataT,pMan,kVal):
                 if(nearest_arr[i][0] > dist):
                     nearest_arr.insert(i,(dist,v))
                     nearest_arr.pop()
+                    break
 #                    for j in range(k-1,i,-1):
 #                        nearest_arr[j+1] = nearest_arr[j]
 #                    nearest_arr[i] = (dist,v)
+    
     majority_rec = {}
     for d,v in nearest_arr:
         if(v in majority_rec):
