@@ -1,4 +1,4 @@
-import sys,configparser,subprocess
+import sys,configparser,subprocess,pstats
 
 tname = sys.argv[1]
 
@@ -9,37 +9,33 @@ klist = [int(k) for k in cfg.get("control","klist").split(":")]
 
 reps = cfg.getint("control","reps")
 
-cfile = open("%s.cor.csv"%tname,"w")
-ffile = open("%s.fal.csv"%tname,"w")
-mfile = open("%s.mis.csv"%tname,"w")
+ofile = open("%s.csv"%tname,"w")
 
+ofile.write(",".join([""]+["%02d"%k for k in klist]) + "\n")
+
+clist = ["Correct"]
+flist = ["Fail"]
+mlist = ["Miss"]
 for k in klist:
-    cfile.write(",%02d"%k)
-    ffile.write(",%02d"%k)
-    mfile.write(",%02d"%k)
+    foo = subprocess.check_output("python ../res_eval.py %s.map %s.%02d.000.log"%(tname,tname,k),shell=True)
+    (total,cor,fail,miss) = foo.decode("utf-8")[:-1].split(",")
+    total = int(total)
+    clist += ["%f"%(int(cor)/total)]
+    flist += ["%f"%(int(fail)/total)]
+    mlist += ["%f"%(int(miss)/total)]
 
-cfile.write(",\n")
-ffile.write(",\n")
-mfile.write(",\n")
+ofile.write(",".join(clist) + "\n")
+ofile.write(",".join(flist) + "\n")
+ofile.write(",".join(mlist) + "\n\n\n")
 
 
 for i in range(reps):
-    cfile.write("%03d,"%i)
-    ffile.write("%03d,"%i)
-    mfile.write("%03d,"%i)
-    for k in klist:
-        foo = subprocess.check_output("python ../res_eval.py %s.map %s.%02d.%03d.log"%(tname,tname,k,i),shell=True)
-        (total,cor,fail,miss) = foo.decode("utf-8")[:-1].split(",")
-        total = int(total)
-        cor = int(cor)
-        fail = int(fail)
-        miss = int(miss)
-        cfile.write("%f,"%(cor/total))
-        ffile.write("%f,"%(fail/total))
-        mfile.write("%f,"%(miss/total))
-    cfile.write("\n")
-    ffile.write("\n")
-    mfile.write("\n")
-cfile.close()
-ffile.close()
-mfile.close()
+	tmp = ["%2d"%i]
+	for k in klist:
+		foo = pstats.Stats("%s.%02d.%03d.log.pro"%(tname,k,i))
+		tmp += ["%f"%foo.total_tt]
+	ofile.write(",".join(tmp) + "\n")
+
+ofile.close()
+
+ofile.close()
