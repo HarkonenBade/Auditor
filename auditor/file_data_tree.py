@@ -13,6 +13,7 @@ class FolderNode():
         self.name = ""
         self.children = {}
         self.last_scanned = None
+        self.classify_data = None
    
 
 class FileDataTree():
@@ -92,5 +93,16 @@ class FileDataTree():
             if f.type == 'file':
                 yield (p,f)
             else:
+                for v in f.children.values():
+                    to_process.append((p+'/'+f.name,v))
+                    
+    def folder_iter(self):
+        to_process = []
+        for v in self.root.children.values():
+            to_process.append(('',v))
+        
+        for p,f in to_process:
+            if f.type != 'file':
+                yield (p,f)
                 for v in f.children.values():
                     to_process.append((p+'/'+f.name,v))
