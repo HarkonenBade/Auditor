@@ -1,0 +1,8 @@
+import EXIF,pickle,sys
+
+with open(sys.argv[1],"rb") as f:
+	tags = EXIF.process_file(f)
+
+for k in tags:
+    if k != "JPEGThumbnail":
+       print k + '#' + str(tags[k])
