@@ -24,7 +24,7 @@ class EXIFPlugin(base_plugin.BasePlugin):
                }
     
     def evaluate_file(self,filename,path):
-        pkl = subprocess.check_output("python2 /home/tom/prj/auditor/plugins/exif.py2 %s"%filename,shell=True)
+        pkl = subprocess.check_output("python2 /home/tom/prj/auditor/plugins/exif.py2 \"%s/%s\""%(path,filename),shell=True)
         ret = {
                'TIMECAPTURE':"",
                'CAMMAKE':"",
