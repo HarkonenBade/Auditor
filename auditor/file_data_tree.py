@@ -1,4 +1,4 @@
-import os,time,pickle
+import os,time,pickle,gzip
 
 class FileNode():
     def __init__(self):
@@ -76,14 +76,25 @@ class FileDataTree():
             else:
                 pass
 
-    def save(self,filepath):
-        with open(filepath,"wb") as f:
-            pickle.dump(self.root,f)
+    def save(self,filepath,comp=True):
+        if(comp):
+            with gzip.open(filepath,"wb") as f:
+                pickle.dump(self.root,f)
+        else:
+            with open(filepath,"wb") as f:
+                pickle.dump(self.root,f)
     
-    def load(self,filepath):
-        with open(filepath,"rb") as f:
-            self.root = pickle.load(f)
-            
+    def load(self,filepath,comp=True):
+        if(not os.path.exists(filepath)):
+            return
+        
+        if(comp):
+            with gzip.open(filepath,"rb") as f:
+                self.root = pickle.load(f)
+        else:
+            with open(filepath,"rb") as f:
+                self.root = pickle.load(f)
+    
     def __iter__(self):
         to_process = []
         for v in self.root.children.values():
