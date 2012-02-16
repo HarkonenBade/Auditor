@@ -1,26 +1,98 @@
-import configparser
+import configparser,os,argparse,settings
 from auditor import *
-import os
 from os import path
+from log import log
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="A program to organise your file system.")
+    parser.add_argument("-c","--config",nargs=1,help="Location of config file.")
+    parser.add_argument("-v",action='store_true',help="Verbose output.")
+    parser.add_argument("-vv",action='store_true',help="Debug output.")
+    
+    args=parser.parse_args()
+    
+    if(args.v):
+        settings.VERBOSITY=1
+    
+    if(args.vv):
+        settings.VERBOSITY=2
+    
+    if(args.config != None):
+        settings.USER_CONFIG_PATH=args.config
+        log(2,"Config path set to :"+args.config)
+
+def load_config():
+    config = configparser.SafeConfigParser()
+    config.read([settings.DEFAULT_CONFIG_PATH,settings.USER_CONFIG_PATH,'./auditor_conf_tmp.cfg'])
+    
+    settings.PLUGIN_DIRECTORY = config.get("Plugins","plugin_dir")
+    settings.CACHE_DIRECTORY = config.get("Plugins","cache_dir")
+    settings.TREE_LOC = config.get("Paths","db_loc")
+    settings.ALLOWED_PATHS = config.get("Paths","allowed").split(":")
+    settings.DISALLOWED_PATHS = config.get("Paths","disallowed").split(":")
+    return config
+
+def store_config(config):
+    config.set("Paths","allowed",':'.join(settings.ALLOWED_PATHS))
+    config.set("Paths","disallowed",':'.join(settings.DISALLOWED_PATHS))
+    
+    f = open('./auditor_conf_tmp.cfg','w')
+    config.write(f)
+    f.close()
+    
+def scan(allowed,disallowed,iNoteAdd = True):
+    global fScanQ
+    global ini
+    pathlist = []
+    pathlist.extend(allowed)
+    for p in pathlist:
+        p = path.abspath(p)
+        if(not p in disallowed and not path.basename(p).startswith('.')):
+            if(iNoteAdd):
+                ini.startWatch(p,recDir=False)
+            cont = os.listdir(p)
+            #print(cont)
+            cont = [p+'/'+k for k in cont]
+            for k in cont:
+                if path.isdir(k):
+                    #print(k)
+                    pathlist.extend([k])
+                else:
+                    #print(k)
+                    f = fData.get(k)
+                    if(f==None or f.last_scanned < os.stat(k).st_ctime):
+                        fScanQ.add(k) 
+
+        
+'''Parse any command line arguments.'''
+parse_args()
+log(1,"Parsed command line arguments.")
 
 '''Init the config parser. Then load the default and current configs.'''
-config = configparser.SafeConfigParser()
-config.read(['~/.config/auditor/conf','./auditor_conf.cfg','./auditor_conf_tmp.cfg'])
+cfg = load_config()
+log(1,"Config data loaded.")
 
-#print("Enter the plugin directory")
-#pDir = input(">")
-pDir = config.get("Plugins","plugin_dir")
-pCache = config.get("Plugins","cache_dir")
 
-pm = plugin_manager.PluginManager(pDir,pCache)
+pm = plugin_manager.PluginManager(settings.PLUGIN_DIRECTORY,settings.CACHE_DIRECTORY)
+log(1,"Plugin manager loaded.")
 ini = inotify_interface.INotifyInterface(100)
+log(1,"iNotify interface initialised.")
 fData = file_data_tree.FileDataTree()
 fScanQ = file_scan_queue.FileScanQueue()
 fScan = file_scanner.FileScanner(fScanQ,fData,pm)
 evHan = event_handler.EventHandler(fScanQ,fData)
+log(1,"File data chain loaded.")
 
 ini.setHandler(evHan.process)
 pm.loadAll()
+log(1,"Plugins loaded.")
+
+fData.load(settings.TREE_LOC)
+log(1,"Tree data loaded from file.")
+
+scan(settings.ALLOWED_PATHS,settings.DISALLOWED_PATHS)
+fScan.scan()
+log(1,"File data updated for edits since last load.")
 
 def inote_scan():
     global ini
@@ -79,36 +151,6 @@ def load_tree():
     foo = input(">")
     fData.load(foo)
 
-def scan(allowed,disallowed,iNoteAdd = True):
-    global fScanQ
-    global ini
-    pathlist = []
-    pathlist.extend(allowed)
-    for p in pathlist:
-        p = path.abspath(p)
-        if(not p in disallowed and not path.basename(p).startswith('.')):
-            if(iNoteAdd):
-                ini.startWatch(p,recDir=False)
-            cont = os.listdir(p)
-            print(cont)
-            cont = [p+'/'+k for k in cont]
-            for k in cont:
-                if path.isdir(k):
-                    print(k)
-                    pathlist.extend([k])
-                else:
-                    print(k)
-                    f = fData.get(k)
-                    if(f==None or f.last_scanned < os.stat(k).st_ctime):
-                        fScanQ.add(k) 
-
-tree_loc = config.get("Paths","db_loc")
-fData.load(tree_loc)
-
-allowed = config.get("Paths","allowed").split(":")
-disallowed = config.get("Paths","disallowed").split(":")
-scan(allowed,disallowed)
-fScan.scan()
 
 cmds = {
     'iscan': inote_scan,
@@ -122,11 +164,8 @@ cmds = {
 
 cmdproc.cmd_loop(cmds)
 
-fData.save(tree_loc)
+fData.save(settings.TREE_LOC)
+log(1,"File tree saved.")
 
-config.set("Paths","allowed",':'.join(allowed))
-config.set("Paths","disallowed",':'.join(disallowed))
-
-f = open('./auditor_conf_tmp.cfg','w')
-config.write(f)
-f.close()
+store_config(cfg)
+log(1,"Config saved.")
