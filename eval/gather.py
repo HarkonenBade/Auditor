@@ -4,7 +4,7 @@ from auditor import file_data_tree
 tname = sys.argv[1]
 
 cfg = configparser.SafeConfigParser()
-cfg.read([tname+".conf"])
+cfg.read(['../'+tname+".conf"])
 
 klist = [int(k) for k in cfg.get("control","klist").split(":")]
 
@@ -18,7 +18,7 @@ ofile = open("%s.dat"%tname,"w")
 #flist = ["Fail"]
 #mlist = ["Miss"]
 for k in klist:
-    foo = subprocess.check_output("python ../res_eval.py %s.map %s.%02d.000.log"%(tname,tname,k),shell=True)
+    foo = subprocess.check_output("python ../../res_eval.py ../%s.map %s.%02d.000.log"%(tname,tname,k),shell=True)
     (total,cor,fail,miss) = foo.decode("utf-8")[:-1].split(",")
     total = int(total)
     #clist += ["%f"%(int(cor)/total)]
@@ -51,7 +51,7 @@ for k in klist:
 ofile.write("\n\n")    
 
 fd = file_data_tree.FileDataTree()
-fd.load(cfg.get("data","db_loc"),comp=False)
+fd.load(cfg.get("data","db_loc"))
 
 freqs = {}
 for p,f in fd:
@@ -68,9 +68,6 @@ fval = freqs.values()
 min_folder = min(fval)
 max_folder = max(fval)
 avg_folder = sum(fval)/len(fval)
-#print(freqs)
-ofile.write("%f\t%f\t%f\n"%(avg_folder,min_folder,max_folder))
-
 
 for p,f in fd.folder_iter():
     if p in freqs:
@@ -81,9 +78,9 @@ for p,f in fd.folder_iter():
 
 
 fval = freqs.values()
-min_folder = min(fval)
-max_folder = max(fval)
-avg_folder = sum(fval)/len(fval)
+min_folder2 = min(fval)
+max_folder2 = max(fval)
+avg_folder2 = sum(fval)/len(fval)
 
-ofile.write("%f\t%f\t%f"%(avg_folder,min_folder,max_folder))
+ofile.write("%f\t%f\t%f\t%f\t%f\t%f\t1"%(avg_folder,avg_folder2,min_folder,min_folder2,max_folder,max_folder2))
 ofile.close()
