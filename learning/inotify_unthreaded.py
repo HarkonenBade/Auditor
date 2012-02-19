@@ -21,7 +21,7 @@ class PTmp(pyinotify.ProcessEvent):
 
 notifier = pyinotify.Notifier(wm,PTmp(),timeout=1000)
 
-wdd = wm.add_watch('/home/tom/', mask, rec=True)
+wdd = wm.add_watch('/home/tom/ni/', mask, rec=True)
 
 
 def quick_check(notifier):
