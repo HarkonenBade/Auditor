@@ -11,7 +11,7 @@ class PerceptronClassifier():
         attrs = self.enc_file(f)
         retset = []
         for n,f in self.fTree.folder_iter():
-            if f.classify_data.classify(attrs):
+            if f.classify_data.classify(attrs)==1:
                 retset += [n+'/'+f.name]
         return retset
         
@@ -19,12 +19,16 @@ class PerceptronClassifier():
         tset = []
         for fldr,fl in self.fTree:
             vals = self.enc_file(fl)
-            tset += (vals,1 if fldr==folder else -1)
+            tset += [(vals,1 if fldr==folder else -1)]
         f = self.fTree.get(folder)
         if(f.classify_data == None):
             f.classify_data = perceptron.Perceptron()
             f.classify_data.init_weights(len(tset[0][0]))#value needed
         f.classify_data.train(tset)
+
+    def train_all(self):
+        for n,f in self.fTree.folder_iter():
+            self.train(n+'/'+f.name)
 
     def enc_file(self,f):
         result = []
