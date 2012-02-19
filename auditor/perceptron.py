@@ -13,16 +13,16 @@ class Perceptron():
     
     def train(self,tset):
         for (i,o) in tset:
-            print(self.weights)
+            #print(self.weights)
             r = self.classify(i)
-            print(r)
-            print(o)
+            #print(r)
+            #print(o)
             deltaw = [self.training_const*(r-o)*x for x in [1]+i]
-            print(deltaw)
+            #print(deltaw)
             for k in range(len(deltaw)):
                 if(abs(deltaw[k])>self.min_error):
                     self.weights[k] = self.weights[k]-deltaw[k]
-            print(self.weights)
+            #print(self.weights)
                     
     def classify(self,inputs):
         if self.calc(inputs)>0:
