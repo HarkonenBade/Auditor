@@ -1,0 +1,37 @@
+#MIME TYPE plugin
+
+k-neighbour distance normalisation
+	Too small a range -> not enough differentiation
+	Problematic - needs some measure on reasonable maximums for all values
+
+k-nearest common prefix combination
+	Restricted in some way to prevent perfect matching at root
+	
+Text plugin
+	Most common nouns
+	pairwise comparison for distance
+
+THING RIP MENTIONED
+
+Evaluation
+	Scripted tests
+	Accuracy+speed
+	Send prelim graphs to Rip
+	profiling
+	
+K-nearest neighbour
+	division by type
+
+
+
+====================
+
+test plan addition
+
+graph performance/number of files
+
+
+
+====================
+
+Mention naive baysian clssifier: performance issues when new files introduced, recompute whole database slices.
