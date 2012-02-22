@@ -72,10 +72,14 @@ def gather():
             for i in range(iterations):
                 s = pstats.Stats("./%02d.%02d.log.pro"%(t,i))
                 tmp += [s.total_tt]
-            out.write("%02d\t%f\n"%(t,sum(tmp)/len(tmp)))
+            avg = sum(tmp)/len(tmp)
+            avg = avg/(2**t)
+            out.write("%04d\t%f\n"%(2**t,avg))
 
 if __name__=="__main__":
     if(sys.argv[1] == "gen"):
         gen()
+    elif(sys.argv[1] == "gather"):
+        gather()
     else:
         test()
