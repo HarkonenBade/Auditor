@@ -1,4 +1,4 @@
-import sys,cProfile,os,itertools,random
+import sys,cProfile,os,itertools,random,pstats
 from os import path
 from auditor import *
 
@@ -57,7 +57,7 @@ def gen():
             fData.save("./%02d.%02d.tr"%(t,i))
         print("]")
 
-def test():
+def test():  
     for i in range(iterations):
         print("ITER:%02d:["%i,end="")
         for t in range(maxval):
@@ -65,6 +65,14 @@ def test():
             cProfile.run('scan("./%02d.%02d.tr","./%02d.%02d.log")'%(t,i,t,i),"./%02d.%02d.log.pro"%(t,i))
         print("]")
 
+def gather():
+    with open("data.dat","wt") as out:
+        for t in range(maxval):
+            tmp = []
+            for i in range(iterations):
+                s = pstats.Stats("./%02d.%02d.log.pro"%(t,i))
+                tmp += [s.total_tt]
+            out.write("%02d\t%f\n"%(t,sum(tmp)/len(tmp)))
 
 if __name__=="__main__":
     if(sys.argv[1] == "gen"):
