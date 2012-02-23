@@ -19,4 +19,4 @@ class EventHandler():
             self.scan_queue.remove(fName)
             self.data_tree.remove(fName)
         else:
-            self.scan_queue.add(fName)
+            self.scan_queue.add(fName,"attrib_update")

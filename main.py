@@ -61,7 +61,7 @@ def scan(allowed,disallowed,iNoteAdd = True):
                     #print(k)
                     f = fData.get(k)
                     if(f==None or f.last_scanned < os.stat(k).st_ctime):
-                        fScanQ.add(k) 
+                        fScanQ.add(k,"attrib_update") 
 
         
 '''Parse any command line arguments.'''
