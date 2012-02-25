@@ -10,8 +10,6 @@ def scan(allowed,disallowed,iNoteAdd = True):
     for p in pathlist:
         p = path.abspath(p)
         if(not p in disallowed and not path.basename(p).startswith('.')):
-            if(iNoteAdd):
-                ini.startWatch(p,recDir=False)
             cont = os.listdir(p)
             print(cont)
             cont = [path.join(p,k) for k in cont]
@@ -23,19 +21,16 @@ def scan(allowed,disallowed,iNoteAdd = True):
                     print(k)
                     f = fData.get(k)
                     if(f==None or f.last_scanned < os.stat(k).st_ctime):
-                        fScanQ.add(k) 
+                        fScanQ.add(k,"attrib_update") 
 
 cfg = configparser.SafeConfigParser()
 cfg.read([sys.argv[1]])
 
 pm = plugin_manager.PluginManager('/home/tom/prj/auditor/plugins','')
-ini = inotify_interface.INotifyInterface(100)
 fData = file_data_tree.FileDataTree()
 fScanQ = file_scan_queue.FileScanQueue()
 fScan = file_scanner.FileScanner(fScanQ,fData,pm)
-evHan = event_handler.EventHandler(fScanQ,fData)
 
-ini.setHandler(evHan.process)
 
 for p in cfg.get("data","plugins").split(":"):
     pm.load(p)
