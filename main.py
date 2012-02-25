@@ -52,7 +52,7 @@ def scan(allowed,disallowed,iNoteAdd = True):
                 ini.startWatch(p,recDir=False)
             cont = os.listdir(p)
             #print(cont)
-            cont = [p+'/'+k for k in cont]
+            cont = [path.join(p,k) for k in cont]
             for k in cont:
                 if path.isdir(k):
                     #print(k)

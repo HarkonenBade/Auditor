@@ -1,3 +1,5 @@
+import os
+from os import path
 from auditor import perceptron,string_enc
 
 class PerceptronClassifier():
@@ -12,7 +14,7 @@ class PerceptronClassifier():
         retset = []
         for n,f in self.fTree.folder_iter():
             if f.classify_data.classify(attrs)==1:
-                retset += [n+'/'+f.name]
+                retset += [path.join(n,f.name)]
         return retset
         
     def train(self,folder):
@@ -28,7 +30,7 @@ class PerceptronClassifier():
 
     def train_all(self):
         for n,f in self.fTree.folder_iter():
-            self.train(n+'/'+f.name)
+            self.train(path.join(n,f.name))
 
     def enc_file(self,f):
         result = []

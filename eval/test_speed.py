@@ -28,13 +28,8 @@ pm.load("mime_plugin")
 
 def scan(db,logname):
     fData.load(db)
-    #with open(logname,"wt") as log:
     for p,f in fData:
-        n = k_nearest_neighbour.k_nearest_neighbour(p+'/'+f.name,fData,pm,k)
-            #if n != '':
-            #    log.write("%s/%s ---> %s\n" % (p,f.name,n))
-            #else:
-            #    log.write("%s/%s ---> NONE\n" % (p,f.name))
+        n = k_nearest_neighbour.k_nearest_neighbour(path.join(p,f.name),fData,pm,k)
 
 def crawl(p):
     return [path.join(p,n) for n in os.listdir(p) if not path.isdir(path.join(p,n))]+\

@@ -1,6 +1,6 @@
 from auditor.plugins import base_plugin
 from auditor.string_dist import levenshtienDist
-import mimetypes
+import mimetypes,os
 
 class mimePlugin(base_plugin.BasePlugin):
     '''Plugin that reads mime types.'''
@@ -15,7 +15,7 @@ class mimePlugin(base_plugin.BasePlugin):
         return {'MIME':levenshtienDist}
     
     def evaluate_file(self,filename,path):
-        (t,e) = self.mClass.guess_type(path+'/'+filename)
+        (t,e) = self.mClass.guess_type(os.path.join(path,filename))
         if t != None:
             return {'MIME':t}
         else:

@@ -105,7 +105,7 @@ class FileDataTree():
                 yield (p,f)
             else:
                 for v in f.children.values():
-                    to_process.append((p+'/'+f.name,v))
+                    to_process.append((os.path.join(p,f.name),v))
                     
     def folder_iter(self):
         to_process = []
@@ -116,4 +116,4 @@ class FileDataTree():
             if f.type != 'file':
                 yield (p,f)
                 for v in f.children.values():
-                    to_process.append((p+'/'+f.name,v))
+                    to_process.append((os.path.join(p,f.name),v))

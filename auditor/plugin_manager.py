@@ -1,4 +1,5 @@
 import imp,os
+from os import path
 
 class PluginManager():
     
@@ -31,7 +32,7 @@ class PluginManager():
                         return False
                     else:
                         self.attributes[k]=attribs[k]
-                plugin.load(self.cache_dir + '/' + m.__name__)
+                plugin.load(path.join(self.cache_dir,m.__name__))
                 return True
     
     
@@ -49,7 +50,7 @@ class PluginManager():
         for a in attrib_names:
             self.attributes.pop(a)
         
-        p.unload(self.cache_dir + '/' + m.__name__)
+        p.unload(path.join(self.cache_dir,m.__name__))
         self.plugins.pop(m.__name__)
     
     def getPluginIter(self):

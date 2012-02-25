@@ -14,7 +14,7 @@ def scan(allowed,disallowed,iNoteAdd = True):
                 ini.startWatch(p,recDir=False)
             cont = os.listdir(p)
             print(cont)
-            cont = [p+'/'+k for k in cont]
+            cont = [path.join(p,k) for k in cont]
             for k in cont:
                 if path.isdir(k):
                     print(k)
@@ -53,7 +53,7 @@ else:
     fData.load(cfg.get("data","db_loc"))
     k = int(sys.argv[2])
     for p,f in fData:
-        n = k_nearest_neighbour.k_nearest_neighbour(p+'/'+f.name,fData,pm,k)
+        n = k_nearest_neighbour.k_nearest_neighbour(path.join(p,f.name),fData,pm,k)
         if n != '':
             print("%s/%s ---> %s" % (p,f.name,n))
         else:

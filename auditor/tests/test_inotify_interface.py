@@ -6,7 +6,7 @@ class TestINotifyInterface(unittest.TestCase):
     
     def callback(self,ev):
         (t,p,n) = ev
-        self.recorded = self.recorded + t + ':' + p + '/' + n + '|'
+        self.recorded = self.recorded + t + ':' + os.path.join(p,n) + '|'
     
     def setUp(self):
         self.recorded = ""

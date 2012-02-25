@@ -1,6 +1,6 @@
 from auditor.plugins import base_plugin
 from auditor.string_dist import levenshtienDist
-import stagger
+import stagger,os
 
 
 class ID3Plugin(base_plugin.BasePlugin):
@@ -17,7 +17,7 @@ class ID3Plugin(base_plugin.BasePlugin):
     
     def evaluate_file(self,filename,path):
         try:
-            tags = stagger.read_tag(path+'/'+filename)
+            tags = stagger.read_tag(os.path.join(path,filename))
             
             return {'ARTIST':tags.artist,
                     'ALBUM':tags.album,
