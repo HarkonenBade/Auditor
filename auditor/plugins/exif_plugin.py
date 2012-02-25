@@ -3,6 +3,8 @@ from auditor.string_dist import levenshtienDist
 import subprocess,datetime,pickle
 
 def timeDiff(f1,f2):
+    if(f1=="" or f2==""):
+        return 365*10 if f1!=f2 else 0
     t1 = datetime.datetime.strptime(f1,"%Y:%m:%d %H:%M:%S")
     t2 = datetime.datetime.strptime(f2,"%Y:%m:%d %H:%M:%S")
     delta = t1-t2
