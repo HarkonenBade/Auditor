@@ -4,7 +4,10 @@ from auditor import *
 lspath = sys.argv[1]
 swaps = int(sys.argv[3])
 newlist = open(sys.argv[4],"wt")
-
+if(len(sys.argv)>6):
+	destination=sys.argv[6]
+else:
+	destination=""
 
 ft = file_data_tree.FileDataTree()
 ft.load(sys.argv[2])
@@ -41,8 +44,8 @@ folders = list(folders | extras)
 fileswaps = random.sample(files,swaps)
 
 for f in files:
-    if(f in fileswaps): 
-        dest = random.choice(folders)
+    if(f in fileswaps):
+        dest = random.choice(folders) if destination=="" else destination
         newlist.write("%s ---> %s\n"%(f,dest))
         of = ft.get(f)
         ft.remove(f)
@@ -56,7 +59,5 @@ for f in files:
 
 ft.save(sys.argv[5])
 newlist.close()
-#print(files)
-#print(folders)
-#print("".join(root_fldr))
+
 
