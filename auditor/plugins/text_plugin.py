@@ -11,7 +11,8 @@ class TextPlugin(base_plugin.BasePlugin):
     
     def load(self,cachedir):
         self.stem = Stemmer.Stemmer("english")
-        with open("stop.txt","rt") as f:
+        stoploc = os.path.join(os.path.dirname(globals()['__file__']),"stop.txt")
+        with open(stoploc,"rt") as f:
             self.stop_words = [l.rstrip() for l in f]
     
     def unload(self,cachedir):
@@ -37,7 +38,7 @@ class TextPlugin(base_plugin.BasePlugin):
                         break
                     else:
                         words += l.strip(PUNCTUATION).split(" ")
-            except e:
+            except UnicodeDecodeError:
                 return {"WORDS":[""]*NUM_WORDS}
         
         words = [w for w in words if w != ""]
@@ -59,4 +60,4 @@ class TextPlugin(base_plugin.BasePlugin):
             (w,c) = t
             common_words[i] = w
         
-        return {"WORDS":common_words},wl,words
+        return {"WORDS":common_words}

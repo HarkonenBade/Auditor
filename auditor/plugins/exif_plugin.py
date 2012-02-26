@@ -1,5 +1,6 @@
 from auditor.plugins import base_plugin
 from auditor.string_dist import levenshtienDist
+from os import path
 import subprocess,datetime,pickle
 
 def timeDiff(f1,f2):
@@ -25,8 +26,10 @@ class EXIFPlugin(base_plugin.BasePlugin):
                'CAMMODEL':levenshtienDist
                }
     
-    def evaluate_file(self,filename,path):
-        pkl = subprocess.check_output("python2 /home/tom/prj/auditor/plugins/exif.py2 \"%s/%s\""%(path,filename),shell=True)
+    def evaluate_file(self,filename,filepath):
+        testfile = path.join(filepath,filename)
+        script = path.join(path.dirname(globals()['__file__']),"exif.py2")
+        pkl = subprocess.check_output("python2 %s \"%s\""%(script,testfile),shell=True)
         ret = {
                'TIMECAPTURE':"",
                'CAMMAKE':"",
