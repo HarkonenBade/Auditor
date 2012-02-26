@@ -5,6 +5,7 @@ from auditor import *
 class flushfile(object):
 	def __init__(self, f):
 		self.f = f
+		self.flush = f.flush
 	def write(self, x):
 		self.f.write(x)
 		self.f.flush()
