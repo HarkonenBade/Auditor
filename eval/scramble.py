@@ -46,10 +46,10 @@ fileswaps = random.sample(files,swaps)
 for f in files:
     if(f in fileswaps):
         dest = random.choice(folders) if destination=="" else destination
-        newlist.write("%s ---> %s\n"%(f,dest))
+        newname = os.path.join(dest,os.path.basename(f))
+        newlist.write("%s ---> %s\n"%(newname,os.path.basename(f)))
         of = ft.get(f)
         ft.remove(f)
-        newname = os.path.join(dest,os.path.basename(f))
         ft.add(newname)
         nf = ft.get(newname)
         nf.attributes = of.attributes
