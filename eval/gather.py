@@ -1,4 +1,4 @@
-import sys,configparser,subprocess,pstats
+import sys,configparser,subprocess,pstats,math
 from auditor import file_data_tree
 
 tname = sys.argv[1]
@@ -45,8 +45,8 @@ for k in klist:
         foo = pstats.Stats("%s.%02d.%03d.log.pro"%(tname,k,i))
         tmp += [foo.total_tt]
     avg = sum(tmp)/len(tmp)
-    var = sum([t*t for t in tmp])/len(tmp) - avg*avg
-    ofile.write("%02d\t%f\t%f\n"%(k,avg,var))
+    stddev = math.sqrt(sum([(t-avg)**2 for t in tmp])/len(tmp))
+    ofile.write("%02d\t%f\t%f\n"%(k,avg,stddev))
 
 ofile.write("\n\n")    
 
