@@ -3,8 +3,9 @@ import math,sys
 def attrib_dist(f1,f2,pMan):
     dists = 0
     for n in f1.attributes:
-        dist = pMan.attributes[n](f1.attributes[n],f2.attributes[n])
-        dists += dist**2
+        if(n in pMan.attributes):
+            dist = pMan.attributes[n](f1.attributes[n],f2.attributes[n])
+            dists += dist**2
     return math.sqrt(dists)
 
 def k_nearest_neighbour(fName,fDataT,pMan,kVal):
