@@ -1,4 +1,4 @@
-import sys,cProfile,os,itertools,random,pstats
+import sys,cProfile,os,itertools,random,pstats,configparser
 from os import path
 from auditor import *
 
@@ -12,10 +12,13 @@ class flushfile(object):
 
 sys.stdout = flushfile(sys.stdout)
 
-k=5
-iterations = 10
-maxval = 12
-testpath="/home/tom/testbeds/tstspd"
+cfg = configparser.SafeConfigParser()
+cfg.read([sys.argv[1]])
+
+k=cfg.getint("data","k")
+iterations = cfg.getint("data","iter")
+maxval = cfg.getint("data","maxval")
+testpath= cfg.get("data","testpath")
 
 
 pm = plugin_manager.PluginManager('/home/tom/prj/auditor/plugins','')
@@ -23,9 +26,8 @@ fData = file_data_tree.FileDataTree()
 fScanQ = file_scan_queue.FileScanQueue()
 fScan = file_scanner.FileScanner(fScanQ,fData,pm)
 
-pm.load("id3_plugin")
-pm.load("mime_plugin")
-#pm.load("exif_plugin")
+for p in cfg.get("data","plugins").split(":"):
+    pm.load(p)
 
 def scan(db,logname):
     fData.load(db)
@@ -47,7 +49,7 @@ def gen():
             num = 2**t
             samp = random.sample(files, num)
             for f in samp:
-                fScanQ.add(f)
+                fScanQ.add(f,"attrib_update")
             fData.__init__()
             fScan.scan()
             fData.save("./%02d.%02d.tr"%(t,i))
@@ -73,9 +75,9 @@ def gather():
             out.write("%04d\t%f\n"%(2**t,avg))
 
 if __name__=="__main__":
-    if(sys.argv[1] == "gen"):
+    if(sys.argv[2] == "gen"):
         gen()
-    elif(sys.argv[1] == "gather"):
+    elif(sys.argv[2] == "gather"):
         gather()
     else:
         test()
