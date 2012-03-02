@@ -110,7 +110,7 @@ class FileDataTree():
     def folder_iter(self):
         to_process = []
         for v in self.root.children.values():
-            to_process.append(('',v))
+            to_process.append(('/',v))
         
         for p,f in to_process:
             if f.type != 'file':
