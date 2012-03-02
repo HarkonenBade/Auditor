@@ -20,11 +20,11 @@ set xlabel "K-Value"
 set xrange [ 1.00000 : 20.0000 ] noreverse nowriteback
 plot "tstNUM.dat" i 0 u 1:2 t "Correct" w lines,\
 "" i 0 u 1:3 t "Fail" w lines,\
-"" i 0 u 1:4 t "Miss" w lines,\
-"" i 2 u 1:7 t "AFS-NF" w imp,\
-"" i 2 u 2:7 t "AFS-WF" w imp,\
-"" i 2 u 3:7 t "MIFS-NF" w imp,\
-"" i 2 u 4:7 t "MIFS-WF" w imp,\
-"" i 2 u 5:7 t "MAFS-NF" w imp,\
-"" i 2 u 6:7 t "MAFS-WF" w imp
+"" i 0 u 1:4 t "Miss" w lines#,\
+#"" i 2 u 1:7 t "AFS-NF" w imp,\
+#"" i 2 u 2:7 t "AFS-WF" w imp,\
+#"" i 2 u 3:7 t "MIFS-NF" w imp,\
+#"" i 2 u 4:7 t "MIFS-WF" w imp,\
+#"" i 2 u 5:7 t "MAFS-NF" w imp,\
+#"" i 2 u 6:7 t "MAFS-WF" w imp
 #    EOF
