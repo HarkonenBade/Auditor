@@ -1,5 +1,5 @@
 from auditor.plugins import base_plugin
-from auditor.string_dist import levenshtienDist
+from auditor.string_dist import levenshteinDist
 from os import path
 import subprocess,datetime,pickle
 
@@ -22,8 +22,8 @@ class EXIFPlugin(base_plugin.BasePlugin):
         '''Retrieves data on all the attributes the plugin supports. Returns a dictionary mapping an attribute type to a function to define distance over that attribute.'''
         return {
                'TIMECAPTURE':timeDiff,
-               'CAMMAKE':levenshtienDist,
-               'CAMMODEL':levenshtienDist
+               'CAMMAKE':levenshteinDist,
+               'CAMMODEL':levenshteinDist
                }
     
     def evaluate_file(self,filename,filepath):

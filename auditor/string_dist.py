@@ -1,8 +1,8 @@
 
 
-def levenshtienDist(a,b):
-    m = len(a)
-    n = len(b)
+def levenshteinDist(a,b):
+    m = len(a)+1
+    n = len(b)+1
 
     if m==0 or n==0:
         return max(m,n)
@@ -19,7 +19,7 @@ def levenshtienDist(a,b):
     
     for j in range(1,n):
         for i in range(1,m):
-            if(a[i] == b[j]):
+            if(a[i-1] == b[j-1]):
                 d[i][j] = d[i-1][j-1]
             else:
                 d[i][j] = min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+1)

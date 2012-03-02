@@ -1,5 +1,5 @@
 from auditor.plugins import base_plugin
-from auditor.string_dist import levenshtienDist
+from auditor.string_dist import levenshteinDist
 import stagger,os
 
 
@@ -10,9 +10,9 @@ class ID3Plugin(base_plugin.BasePlugin):
     version = "0.0.0" 
     
     def get_attribute_types(self):
-        return {'ARTIST':levenshtienDist,
-                'ALBUM' :levenshtienDist,
-                'GENRE' :levenshtienDist,
+        return {'ARTIST':levenshteinDist,
+                'ALBUM' :levenshteinDist,
+                'GENRE' :levenshteinDist,
                 'YEAR'  :lambda x,y:abs(x-y)}
     
     def evaluate_file(self,filename,path):
