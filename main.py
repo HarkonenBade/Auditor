@@ -1,4 +1,4 @@
-import configparser,os,argparse,settings
+import os,argparse,settings,string
 from auditor import *
 from os import path
 from log import log
@@ -20,25 +20,6 @@ def parse_args():
     if(args.config != None):
         settings.USER_CONFIG_PATH=args.config
         log(2,"Config path set to :"+args.config)
-
-def load_config():
-    config = configparser.SafeConfigParser()
-    config.read([settings.DEFAULT_CONFIG_PATH,settings.USER_CONFIG_PATH,'./auditor_conf_tmp.cfg'])
-    
-    settings.PLUGIN_DIRECTORY = config.get("Plugins","plugin_dir")
-    settings.CACHE_DIRECTORY = config.get("Plugins","cache_dir")
-    settings.TREE_LOC = config.get("Paths","db_loc")
-    settings.ALLOWED_PATHS = config.get("Paths","allowed").split(":")
-    settings.DISALLOWED_PATHS = config.get("Paths","disallowed").split(":")
-    return config
-
-def store_config(config):
-    config.set("Paths","allowed",':'.join(settings.ALLOWED_PATHS))
-    config.set("Paths","disallowed",':'.join(settings.DISALLOWED_PATHS))
-    
-    f = open('./auditor_conf_tmp.cfg','w')
-    config.write(f)
-    f.close()
     
 def scan(allowed,disallowed,iNoteAdd = True):
     global fScanQ
@@ -69,7 +50,7 @@ parse_args()
 log(1,"Parsed command line arguments.")
 
 '''Init the config parser. Then load the default and current configs.'''
-cfg = load_config()
+settings.load_config()
 log(1,"Config data loaded.")
 
 
@@ -94,72 +75,86 @@ scan(settings.ALLOWED_PATHS,settings.DISALLOWED_PATHS)
 fScan.scan()
 log(1,"File data updated for edits since last load.")
 
-def inote_scan():
-    global ini
+def inote_scan(a):
     print("iNotify Scanning...")
     ini.scan()
     print("iNotify Scan Complete.")
+inote_scan.desc = "Forces an iNotify update."
 
-def fscan_scan():
-    global fScan
+def fscan_scan(a):
     print("File Scanning..")
     fScan.scan()
     print("File Scan Complete.")
+fscan_scan.desc = "Forces a file scan queue update."
 
-def path_add():
-    al = []
-    dis = []
-    tmp = ""
-    while True:
-        print("Enter more allowed paths.")
-        tmp = input(">")
-        if(tmp != ""):
-            al = al+[tmp]
+def k_near(a):
+    try:
+        i = a.rindex(" ")
+        f = a[:i]
+        k = a[i+1:]
+        k = int(k)
+    except ValueError:
+        print("USAGE: knear path k")
+    if(path.isfile(f)):
+        print("Scanning.")
+        print(k_nearest_neighbour.k_nearest_neighbour(f,fData,pm,k))
+    else:
+        print("USAGE: knear path k")
+k_near.desc = "Performs a k-nearest-neighbour scan on a file."
+
+def info(a):
+    f = fData.get(a)    
+    if(f):
+        print("Name: %s"%f.name)
+        print("Last Scanned: %s"%str(f.last_scanned))
+        print("Type: %s"%f.type)
+        if(f.type == "folder"):
+            print("Children: %s"%str(f.children))
         else:
-            break
-    while True:
-        print("Enter more disallowed paths.")
-        tmp = input(">")
-        if(tmp != ""):
-            dis = dis+[tmp]
-        else:
-            break
-    scan(al,dis)
+            print("Attributes: %s"%str(f.attributes))
+    else:
+        print("USAGE: info path")
+info.desc = "Prints data on a file."
 
-def k_near():
-    global fData
-    global pm
-    print("Enter a file name to eval.")
-    foo = input(">")
-    print(k_nearest_neighbour.k_nearest_neighbour(foo,fData,pm,4))
+def reload_plugins(a):
+    print("Unloading existing plugins.")
+    pm.deinit()
+    print("Updating directories.")
+    pm.__init__(settings.PLUGIN_DIRECTORY,settings.CACHE_DIRECTORY)
+    print("Loading new plugins.")
+    pm.loadAll()
+reload_plugins.desc = "Updates plugin related directories and reloads all plugins."
 
-def print_attr():
-    global fData
-    print("Enter a file.")
-    foo = input(">")
-    print(fData.get(foo).attributes)
+def change_plugin_dir(a):
+    if(path.isdir(a)):
+        print("Plugin directory changed to: %s"%a)
+        settings.PLUGIN_DIRECTORY = a
+    else:
+        print("USAGE: chpdir path")
+change_plugin_dir.desc = "Changes the plugin directories location."
 
-def save_tree():
-    global fData
-    print("Enter a file to save to.")
-    foo = input(">")
-    fData.save(foo)
+def change_cache_dir(a):
+    if(path.isdir(a)):
+        print("Cache directory changed to: %s"%a)
+        settings.CACHE_DIRECTORY = a
+    else:
+        print("USAGE: chcdir path")
+change_cache_dir.desc = "Changes the plugin cache directories location."
 
-def load_tree():
-    global fData
-    print("Enter a file to load from.")
-    foo = input(">")
-    fData.load(foo)
-
+def help_print(a):
+    for k in cmds:
+        print("%s: %s"%(k,cmds[k].desc))
+help_print.desc = "Prints out this help message."
 
 cmds = {
+    'help': help_print,
     'iscan': inote_scan,
     'fscan': fscan_scan,
-    'addpath': path_add,
     'knear' : k_near,
-    'pattr' : print_attr,
-    'savetree': save_tree,
-    'loadtree': load_tree
+    'info' : info,
+    'chpdir': change_plugin_dir,
+    'chcdir': change_cache_dir,
+    'reload_plugins': reload_plugins
 }
 
 cmdproc.cmd_loop(cmds)
@@ -167,5 +162,5 @@ cmdproc.cmd_loop(cmds)
 fData.save(settings.TREE_LOC)
 log(1,"File tree saved.")
 
-store_config(cfg)
+settings.store_config()
 log(1,"Config saved.")
