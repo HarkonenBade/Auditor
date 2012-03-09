@@ -1,6 +1,7 @@
-import os,argparse,settings,string
+import os,argparse,settings,string,time,queue
 from auditor import *
 from os import path
+from queue import Queue
 from log import log
 
 def parse_args():
@@ -43,8 +44,7 @@ def scan(allowed,disallowed,iNoteAdd = True):
                     f = fData.get(k)
                     if(f==None or f.last_scanned < os.stat(k).st_ctime):
                         fScanQ.add(k,"attrib_update") 
-
-        
+    
 '''Parse any command line arguments.'''
 parse_args()
 log(1,"Parsed command line arguments.")
@@ -146,18 +146,55 @@ def help_print(a):
         print("%s: %s"%(k,cmds[k].desc))
 help_print.desc = "Prints out this help message."
 
+
+Q = Queue()
+
+class Task():
+    def __init__(self,fn,a,rep=False,rep_i=0):
+        self.fn = fn
+        self.a = a
+        self.rep = rep
+        self.rep_i = rep_i
+        self.rep_c = rep_i
+    
+    def run(self):
+        if self.a != None:
+            self.fn(self.a)
+        else:
+            self.fn()
+
+
+f = lambda x:lambda a:Q.put(Task(x,a))
+
 cmds = {
-    'help': help_print,
-    'iscan': inote_scan,
-    'fscan': fscan_scan,
-    'knear' : k_near,
-    'info' : info,
-    'chpdir': change_plugin_dir,
-    'chcdir': change_cache_dir,
-    'reload_plugins': reload_plugins
+    'help': f(help_print),
+    'iscan': f(inote_scan),
+    'fscan': f(fscan_scan),
+    'knear' : f(k_near),
+    'info' : f(info),
+    'chpdir': f(change_plugin_dir),
+    'chcdir': f(change_cache_dir),
+    'reload_plugins': f(reload_plugins)
 }
 
-cmdproc.cmd_loop(cmds)
+tcl = cmdproc.ThreadedCmdLoop(cmds)
+            
+tcl.start()
+while tcl.gather_live() :
+    try:
+        t = Q.get(block=False)
+        if t.rep_c > 0 :
+            t.rep_c -= 1
+            Q.put(t)
+        else:
+            t.run()
+            if t.rep :
+                t.rep_c = t.rep_i
+                Q.put(t)
+    except queue.Empty:
+        pass
+    tcl.run_commands(n=10)
+    time.sleep(0.1)
 
 fData.save(settings.TREE_LOC)
 log(1,"File tree saved.")
