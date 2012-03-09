@@ -47,7 +47,7 @@ class ThreadedCmdLoop():
         for t in range(n):
             try:
                 c,a = self.queue.get_nowait()
-                if(c in cmds):                
+                if(c in self.cmds):                
                     self.cmds[c](a)
                 elif(c != ''):
                     print("%s is not a valid command."%c)
