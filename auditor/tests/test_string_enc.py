@@ -1,5 +1,5 @@
-from .perceptron import Perceptron
-from .string_enc import enc_str_unit,enc_str_single    
+from auditor.perceptron import Perceptron
+from auditor.string_enc import enc_str_unit,enc_str_single    
 
 def test():
     test_data = ["abc","def","h jk","abc","ts"]*20
