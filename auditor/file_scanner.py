@@ -1,4 +1,5 @@
 from os import path
+from auditor.k_nearest_neighbour import k_nearest_neighbour
 
 class FileScanner():
     def __init__(self,queue,tree,pm):
@@ -18,4 +19,5 @@ class FileScanner():
                     self.data_tree.update(f,attribs)
                     self.file_queue.add(f,"loc_update")
             elif(a=="loc_update"):
-                pass
+                dest = k_nearest_neighbour(f,self.data_tree,self.plugin_manager,8)#temp kval of 8
+                print(f + "--->" + dest)
