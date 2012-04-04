@@ -178,7 +178,10 @@ cmds = {
 }
 
 tcl = cmdproc.ThreadedCmdLoop(cmds)
-            
+
+Q.put(Task(fScan.scan,None,True,3000))#Scan every 5m
+Q.put(Task(ini.scan,None,True,300))#Scan every 30s
+
 tcl.start()
 while tcl.gather_live() :
     try:
