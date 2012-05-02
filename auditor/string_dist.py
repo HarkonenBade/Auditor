@@ -4,8 +4,8 @@ def levenshteinDist(a,b):
     m = len(a)+1
     n = len(b)+1
 
-    if m==0 or n==0:
-        return max(m,n)
+    if m==1 or n==1:
+        return max(m,n)-1
 
     d = [0]*m
     for i in range(m):
