@@ -47,7 +47,7 @@ for f in files:
     if(f in fileswaps):
         dest = random.choice(folders) if destination=="" else destination
         newname = os.path.join(dest,os.path.basename(f))
-        newlist.write("%s ---> %s\n"%(newname,os.path.basename(f)))
+        newlist.write("%s ---> %s\n"%(newname,os.path.dirname(f)))
         of = ft.get(f)
         ft.remove(f)
         ft.add(newname)

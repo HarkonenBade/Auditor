@@ -17,7 +17,7 @@ cfg.read(["../%s.conf"%sys.argv[1]])
 
 t_rep=cfg.getint("control","t_reps")
 testpath= cfg.get("data","allowed")
-
+tr_loc = cfg.get("data","db_loc")
 
 pm = plugin_manager.PluginManager('/home/tom/prj/auditor/plugins','')
 fData = file_data_tree.FileDataTree()
@@ -52,10 +52,10 @@ def gen():
         fScanQ.add(f,"attrib_update")
     dData.__init__()
     Scan.scan()
-    fData.save("../%s.tr"%sys.argv[1])
+    fData.save(tr_loc)
 
 def test():
-    fData.load("../%s.tr"%sys.argv[1])  
+    fData.load(tr_loc)  
     for i in range(t_rep):
         print("Training:%02d:"%i)
         cProfile.run('scan("./%02d.log")'%(i),"./%02d.log.pro"%(i))

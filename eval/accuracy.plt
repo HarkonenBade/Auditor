@@ -13,18 +13,24 @@
 #    	faq, bugs, etc:   type "help seeking-assistance"
 #    	immediate help:   type "help"
 #    	plot window:      hit 'h'
-set terminal pngcairo  size 640, 480 
-set output 'tstNUM-accuracy.png'
-set title "Test Set NUM - Accuracy" 
-set xlabel "K-Value" 
-set xrange [ 1.00000 : 20.0000 ] noreverse nowriteback
-plot "tstNUM.dat" i 0 u 1:2 t "Correct" w lines,\
+set terminal pngcairo  size 800, 800 
+set output 'mp3img-paccuracy.png'
+set multiplot layout 3,1 title "Combined Accuracy Tests"
+
+set ylabel "Percentage Proportion"
+set xlabel "Training Iteration"
+set xrange [ 0.00000 : 19.0000 ] noreverse nowriteback
+set title "Perfect Test Case"
+plot "mp3img/perfect/data.dat" i 0 u 1:2 t "Correct" w lines,\
 "" i 0 u 1:3 t "Fail" w lines,\
-"" i 0 u 1:4 t "Miss" w lines#,\
-#"" i 2 u 1:7 t "AFS-NF" w imp,\
-#"" i 2 u 2:7 t "AFS-WF" w imp,\
-#"" i 2 u 3:7 t "MIFS-NF" w imp,\
-#"" i 2 u 4:7 t "MIFS-WF" w imp,\
-#"" i 2 u 5:7 t "MAFS-NF" w imp,\
-#"" i 2 u 6:7 t "MAFS-WF" w imp
-#    EOF
+"" i 0 u 1:4 t "Miss" w lines
+set title "Scramble Test Case"
+plot "mp3img/scramble/data.dat" i 0 u 1:2 t "Correct" w lines,\
+"" i 0 u 1:3 t "Fail" w lines,\
+"" i 0 u 1:4 t "Miss" w lines
+set title "Download Test Case"
+plot "mp3img/dlscram/data.dat" i 0 u 1:2 t "Correct" w lines,\
+"" i 0 u 1:3 t "Fail" w lines,\
+"" i 0 u 1:4 t "Miss" w lines
+
+
