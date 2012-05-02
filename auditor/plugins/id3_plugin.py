@@ -5,7 +5,7 @@ import stagger,os
 
 class ID3Plugin(base_plugin.BasePlugin):
     '''Plugin that reads ID3 tags.'''
-    name    = "ID3 Plugin."
+    name    = "ID3 Plugin"
     author  = "Tom Bytheway"
     version = "0.0.0" 
     

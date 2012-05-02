@@ -4,7 +4,7 @@ import mimetypes,os
 
 class mimePlugin(base_plugin.BasePlugin):
     '''Plugin that reads mime types.'''
-    name    = "mime Plugin."
+    name    = "mime Plugin"
     author  = "Tom Bytheway"
     version = "0.0.0" 
     
